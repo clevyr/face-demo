@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package FaceIdentifier;
+
+option csharp_namespace = "FaceIdentifierService";
+
+service FaceIdentifier {
+  rpc Identify (IdentifyRequest) returns (IdentifyReply);
+  rpc IdentifyImage(stream IdentifyImageRequest) returns (IdentifyReply);
+}
+
+// The request message containing the user's name.
+message IdentifyRequest {
+  //bytes image = 1;
+  string filepath = 1;
+}
+
+message IdentifyImageRequest {
+    bytes image = 1;
+}
+
+
+
+// The response message containing the greetings
+message  IdentifyReply {
+    message IdentifyResult {
+        message IdentifyItem {        
+            string name = 1;
+            double distance = 2;        
+        };    
+        message BoundingBox {
+                double minX = 1;
+                double minY = 2;
+                double maxX = 3;
+                double maxY = 4;
+        };
+    IdentifyItem nearest = 1;
+    IdentifyItem furthest = 2;
+    BoundingBox boundingBox = 3;
+  };
+  repeated IdentifyResult results = 1;
+}

@@ -1,0 +1,148 @@
+﻿@page "/"
+
+@using FaceIdentifierService
+@using System.IO;
+@inject FaceIdentifierService.FaceIdentifier.FaceIdentifierClient FaceIdentifierClient
+
+
+<style>
+    .img-overlay-wrap {
+        position: relative;
+        display: inline-block;
+        transition: transform 150ms ease-in-out;
+        max-width: 200px;
+    }
+
+        .img-overlay-wrap img { 
+            max-width: 100%;
+            height: auto;
+        }
+
+        .img-overlay-wrap svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+</style>
+<h1>Face</h1>
+
+
+<div>
+    <InputFile OnChange=@HandleFileSelectedAsync />
+</div>
+<div class="row">
+    @if (FileData != null)
+    {
+    <div class="col">
+        <div class="img-overlay-wrap">
+            <img src=@ImgSrcFromBytes(FileData) />
+            @if (Reply != null)
+            {
+        <svg width="100%" height="100%" style="position:absolute;left:0;top:0">
+            @foreach (var result in Reply.Results)
+            {
+                var width = 100 * (result.BoundingBox.MaxX - result.BoundingBox.MinX);
+                var height = 100 * (result.BoundingBox.MaxY - result.BoundingBox.MinY);
+                var x = result.BoundingBox.MinX * 100;
+                var y = result.BoundingBox.MinY * 100;
+                <defs>
+                    <mask id="mask">
+                        <rect width="@width%" height="@height%" x="@x%" y="@y%" style="stroke-width:1;stroke:rgb(0, 255, 144)" mask="url(#mask)" />
+
+                    </mask>
+                </defs>
+
+                <rect width="100%" height="100%" fill="grey"></rect>
+
+
+            }
+        </svg>
+            }
+        </div>
+    </div>
+    }
+
+    @if (Loading)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else if (Reply != null)
+    {
+        foreach (var result in Reply.Results)
+        {
+            <div class="col">
+                <label>Closest</label>
+                <img src=@FileDataFromName(result.Nearest.Name) style="max-width:200px" />
+                <span>@result.Nearest.Distance</span>
+            </div>
+            <div class="col">
+                <label>Furthest</label>
+                <img src=@FileDataFromName(result.Furthest.Name) style="max-width:200px" />
+                <span>@result.Furthest.Distance</span>
+            </div>
+
+        }
+    }
+</div>
+
+@*<button class="btn btn-primary" @onclick=@TestService>Click me</button>*@
+
+@code {
+    FaceIdentifierService.IdentifyReply Reply;
+    IFileListEntry File;
+    byte[] FileData;
+    bool Loading = false;
+    private async Task HandleFileSelectedAsync(IFileListEntry[] files)
+    {
+
+        File = files.First();
+        var stream = await File.ReadAllAsync();
+        FileData = new byte[stream.Length];
+        await stream.ReadAsync(FileData, 0, (int)stream.Length);
+        System.IO.File.WriteAllBytes("test.png", FileData);
+        await TestService();
+    }
+
+    private string ImgSrcFromBytes(byte[] image)
+    {
+        var base64 = Convert.ToBase64String(image);
+        return String.Format("data:image/jpg;base64,{0}", base64);
+    }
+
+
+    private string FileDataFromName(string name)
+    {
+        var filePath = $"../../data/faces/{name}-smile.jpg";
+        var bytes = System.IO.File.ReadAllBytes(filePath);
+        return ImgSrcFromBytes(bytes);
+
+    }
+
+    private async Task TestService()
+    {
+        Loading = true;
+        Reply = null;
+        //recommended chunk size (64kb)
+        var chunkSize = 64 * 1024;
+
+        using var call = FaceIdentifierClient.IdentifyImage();
+
+        var numChunks = Math.Ceiling(FileData.Length / (double)chunkSize);
+        for (int i = 0; i < numChunks; ++i)
+        {
+            var count = numChunks == 1 ? Math.Min(FileData.Length, chunkSize) : Math.Min(chunkSize, (FileData.Length - (i * chunkSize)));
+            var byteString = Google.Protobuf.ByteString.CopyFrom(FileData, i * chunkSize, count);
+            var chunk = new IdentifyImageRequest { Image = byteString };
+            await call.RequestStream.WriteAsync(chunk);
+        }
+        await call.RequestStream.CompleteAsync();
+
+        Reply = await call;
+
+
+
+        Loading = false;
+    }
+
+
+}
