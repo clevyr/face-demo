@@ -8,7 +8,7 @@ import random
 EXPANSION = 0.0
 JITTER = 5
 SAMPLES = 1
-ANGLE = 30
+ANGLE = 10
 
 EXTRACTOR = None
 def load_extractor():
@@ -34,7 +34,7 @@ def extract_all_faces(dir='../data/faces', size = (224,224)):
 
 def extract_faces(filepath, size = (224,224), confidence=0.85, jitter=False):
     print('extracting face from image.')
-    img = Image.open(filepath)
+    img = Image.open(filepath).convert('RGB')
     data = np.asarray(img)
     extractor = load_extractor()
     faces = extractor.detect_faces(data)
@@ -49,17 +49,21 @@ def extract_faces(filepath, size = (224,224), confidence=0.85, jitter=False):
         for i in range(SAMPLES):
             minX, minY, width, height = face['box']                
             maxX, maxY = minX + width, minY + height
-            width = int(width * EXPANSION)
-            height = int(height * EXPANSION)
-            minX = max(0, minX - width)
-            minY = max(0, minY - height)
-            maxX = min(img.width, maxX + width)
-            maxY = min(img.height, maxY + height)
+            # width = int(width * EXPANSION)
+            # height = int(height * EXPANSION)
+            # minX = max(0, minX - width)
+            # minY = max(0, minY - height)
+            # maxX = min(img.width, maxX + width)
+            # maxY = min(img.height, maxY + height)
             if jitter:
                 minX += random.randrange(-JITTER, JITTER)
                 minY += random.randrange(-JITTER, JITTER)
                 maxX += random.randrange(-JITTER, JITTER)
                 maxY += random.randrange(-JITTER, JITTER)
+            minX = max(0, minX)
+            minY = max(0, minY)
+            maxX = min(img.width, maxX)
+            maxY = min(img.height, maxY)
             facePixels = data[minY:maxY, minX:maxX]
             faceImg = Image.fromarray(facePixels)
             faceImg = faceImg.resize(size)
@@ -69,6 +73,8 @@ def extract_faces(filepath, size = (224,224), confidence=0.85, jitter=False):
             pixels.append(np.asarray(faceImg))
         results.append({ 'bboxes' : np.array(bboxes), 'pixels' : np.array(pixels)})
             #return (np.array( minX / img.width, minY / img.height, maxX / img.width,  maxY / img.height), np.asarray(faceImg))    
+
+    print('num faces: ', len(results))
     return ( np.array([x['bboxes'] for x in results]), np.array([x['pixels'] for x in results]))
     # bboxes (x1,y1,x2,y2) & pixels
     #return (np.array([ x[0] for x in results ]), np.array([ x[1] for x in results ]))
