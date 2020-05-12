@@ -19,34 +19,24 @@ def load_model():
         x2 = GlobalMaxPooling2D()(output)
         x = Concatenate()([x1,x2])
         MODEL = Model(MODEL.input, x)
-        #MODEL.summary()
+        MODEL.summary()
 
     return MODEL
 
 def extract_all_features():
     model = load_model()
     names,faces = extract_all_faces()
-
-    features = []
-    for face in faces:    
-        f = model.predict(face)        
-        avg = np.average(f, axis=0)        
-        features.append( avg )
-    return (names, np.array(features))
+    
+    
+    return (names, model.predict(faces))
     
 def extract_features(filepath):
     
-    boxes,faces = extract_faces(filepath)
+    bboxes,faces = extract_faces(filepath)
     model = load_model()
-
-    features = []
-    bboxes = []
-    
-    for box,face in zip(boxes,faces):
-        print('extracting features from face')
-        bboxes.append(np.average(box, axis=0))
-        features.append( np.average(model.predict(face), axis=0 ) )
-    return (bboxes, np.array(features))
+   
+    print('extracting features from faces')       
+    return (bboxes, model.predict(faces))
 
 def load_features():
     if os.path.exists(FEATURES):
@@ -63,10 +53,10 @@ def load_features():
         return (names, features, indices)
 
 if __name__ == "__main__":
-    names, features, sort = load_features()
-    print(features.shape)
-    #bboxes,features = extract_features('../data/faces/dustin-smile.jpg')
-    #print(bboxes[0].shape, features[0].shape)
+    #names, features, sort = load_features()
+    #print(features.shape)
+    bboxes,features = extract_features('../data/faces/dustin-smile.jpg')
+    print(bboxes[0].shape, features[0].shape)
     #names, features = extract_all_features()
     
     

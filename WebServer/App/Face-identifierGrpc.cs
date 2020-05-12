@@ -7,23 +7,23 @@
 
 using grpc = global::Grpc.Core;
 
-namespace FaceIdentifierService {
-  public static partial class FaceIdentifier
+namespace Services {
+  public static partial class Identifier
   {
-    static readonly string __ServiceName = "FaceIdentifier.FaceIdentifier";
+    static readonly string __ServiceName = "FaceIdentifier.Identifier";
 
-    static readonly grpc::Marshaller<global::FaceIdentifierService.IdentifyRequest> __Marshaller_FaceIdentifier_IdentifyRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::FaceIdentifierService.IdentifyRequest.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::FaceIdentifierService.IdentifyReply> __Marshaller_FaceIdentifier_IdentifyReply = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::FaceIdentifierService.IdentifyReply.Parser.ParseFrom);
-    static readonly grpc::Marshaller<global::FaceIdentifierService.IdentifyImageRequest> __Marshaller_FaceIdentifier_IdentifyImageRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::FaceIdentifierService.IdentifyImageRequest.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::Services.IdentifyRequest> __Marshaller_FaceIdentifier_IdentifyRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Services.IdentifyRequest.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::Services.IdentifyReply> __Marshaller_FaceIdentifier_IdentifyReply = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Services.IdentifyReply.Parser.ParseFrom);
+    static readonly grpc::Marshaller<global::Services.IdentifyImageRequest> __Marshaller_FaceIdentifier_IdentifyImageRequest = grpc::Marshallers.Create((arg) => global::Google.Protobuf.MessageExtensions.ToByteArray(arg), global::Services.IdentifyImageRequest.Parser.ParseFrom);
 
-    static readonly grpc::Method<global::FaceIdentifierService.IdentifyRequest, global::FaceIdentifierService.IdentifyReply> __Method_Identify = new grpc::Method<global::FaceIdentifierService.IdentifyRequest, global::FaceIdentifierService.IdentifyReply>(
+    static readonly grpc::Method<global::Services.IdentifyRequest, global::Services.IdentifyReply> __Method_Identify = new grpc::Method<global::Services.IdentifyRequest, global::Services.IdentifyReply>(
         grpc::MethodType.Unary,
         __ServiceName,
         "Identify",
         __Marshaller_FaceIdentifier_IdentifyRequest,
         __Marshaller_FaceIdentifier_IdentifyReply);
 
-    static readonly grpc::Method<global::FaceIdentifierService.IdentifyImageRequest, global::FaceIdentifierService.IdentifyReply> __Method_IdentifyImage = new grpc::Method<global::FaceIdentifierService.IdentifyImageRequest, global::FaceIdentifierService.IdentifyReply>(
+    static readonly grpc::Method<global::Services.IdentifyImageRequest, global::Services.IdentifyReply> __Method_IdentifyImage = new grpc::Method<global::Services.IdentifyImageRequest, global::Services.IdentifyReply>(
         grpc::MethodType.ClientStreaming,
         __ServiceName,
         "IdentifyImage",
@@ -33,60 +33,60 @@ namespace FaceIdentifierService {
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
     {
-      get { return global::FaceIdentifierService.FaceIdentifierReflection.Descriptor.Services[0]; }
+      get { return global::Services.FaceIdentifierReflection.Descriptor.Services[0]; }
     }
 
-    /// <summary>Client for FaceIdentifier</summary>
-    public partial class FaceIdentifierClient : grpc::ClientBase<FaceIdentifierClient>
+    /// <summary>Client for Identifier</summary>
+    public partial class IdentifierClient : grpc::ClientBase<IdentifierClient>
     {
-      /// <summary>Creates a new client for FaceIdentifier</summary>
+      /// <summary>Creates a new client for Identifier</summary>
       /// <param name="channel">The channel to use to make remote calls.</param>
-      public FaceIdentifierClient(grpc::ChannelBase channel) : base(channel)
+      public IdentifierClient(grpc::ChannelBase channel) : base(channel)
       {
       }
-      /// <summary>Creates a new client for FaceIdentifier that uses a custom <c>CallInvoker</c>.</summary>
+      /// <summary>Creates a new client for Identifier that uses a custom <c>CallInvoker</c>.</summary>
       /// <param name="callInvoker">The callInvoker to use to make remote calls.</param>
-      public FaceIdentifierClient(grpc::CallInvoker callInvoker) : base(callInvoker)
+      public IdentifierClient(grpc::CallInvoker callInvoker) : base(callInvoker)
       {
       }
       /// <summary>Protected parameterless constructor to allow creation of test doubles.</summary>
-      protected FaceIdentifierClient() : base()
+      protected IdentifierClient() : base()
       {
       }
       /// <summary>Protected constructor to allow creation of configured clients.</summary>
       /// <param name="configuration">The client configuration.</param>
-      protected FaceIdentifierClient(ClientBaseConfiguration configuration) : base(configuration)
+      protected IdentifierClient(ClientBaseConfiguration configuration) : base(configuration)
       {
       }
 
-      public virtual global::FaceIdentifierService.IdentifyReply Identify(global::FaceIdentifierService.IdentifyRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      public virtual global::Services.IdentifyReply Identify(global::Services.IdentifyRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
       {
         return Identify(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
-      public virtual global::FaceIdentifierService.IdentifyReply Identify(global::FaceIdentifierService.IdentifyRequest request, grpc::CallOptions options)
+      public virtual global::Services.IdentifyReply Identify(global::Services.IdentifyRequest request, grpc::CallOptions options)
       {
         return CallInvoker.BlockingUnaryCall(__Method_Identify, null, options, request);
       }
-      public virtual grpc::AsyncUnaryCall<global::FaceIdentifierService.IdentifyReply> IdentifyAsync(global::FaceIdentifierService.IdentifyRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      public virtual grpc::AsyncUnaryCall<global::Services.IdentifyReply> IdentifyAsync(global::Services.IdentifyRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
       {
         return IdentifyAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
       }
-      public virtual grpc::AsyncUnaryCall<global::FaceIdentifierService.IdentifyReply> IdentifyAsync(global::FaceIdentifierService.IdentifyRequest request, grpc::CallOptions options)
+      public virtual grpc::AsyncUnaryCall<global::Services.IdentifyReply> IdentifyAsync(global::Services.IdentifyRequest request, grpc::CallOptions options)
       {
         return CallInvoker.AsyncUnaryCall(__Method_Identify, null, options, request);
       }
-      public virtual grpc::AsyncClientStreamingCall<global::FaceIdentifierService.IdentifyImageRequest, global::FaceIdentifierService.IdentifyReply> IdentifyImage(grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
+      public virtual grpc::AsyncClientStreamingCall<global::Services.IdentifyImageRequest, global::Services.IdentifyReply> IdentifyImage(grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
       {
         return IdentifyImage(new grpc::CallOptions(headers, deadline, cancellationToken));
       }
-      public virtual grpc::AsyncClientStreamingCall<global::FaceIdentifierService.IdentifyImageRequest, global::FaceIdentifierService.IdentifyReply> IdentifyImage(grpc::CallOptions options)
+      public virtual grpc::AsyncClientStreamingCall<global::Services.IdentifyImageRequest, global::Services.IdentifyReply> IdentifyImage(grpc::CallOptions options)
       {
         return CallInvoker.AsyncClientStreamingCall(__Method_IdentifyImage, null, options);
       }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
-      protected override FaceIdentifierClient NewInstance(ClientBaseConfiguration configuration)
+      protected override IdentifierClient NewInstance(ClientBaseConfiguration configuration)
       {
-        return new FaceIdentifierClient(configuration);
+        return new IdentifierClient(configuration);
       }
     }
 

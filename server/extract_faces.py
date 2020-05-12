@@ -5,18 +5,58 @@ import numpy as np
 import io
 import random
 
-EXPANSION = 0.0
-JITTER = 5
-SAMPLES = 1
-ANGLE = 10
-
+TOO_SMALL = 0.025
 EXTRACTOR = None
+
+#load up the MTCNN extractor if we haven't already loaded it
 def load_extractor():
     global EXTRACTOR
     if EXTRACTOR is None:
         EXTRACTOR = mtcnn.MTCNN()
     return EXTRACTOR
 
+#extract all bounding box and face pixels from the specified file
+def extract_faces(filepath, size = (224,224), confidence=0.75, jitter=False):
+    print('extracting face from image.')
+
+    #open the file as an image and convert it to RGB, if necessary
+    img = Image.open(filepath).convert('RGB')
+    #convert the image to a numpy array
+    data = np.asarray(img)
+
+    #load the MTCNN face extractor & extract faces
+    extractor = load_extractor()
+    faces = extractor.detect_faces(data)
+
+    bboxes = []
+    pixels = []
+
+    #order faces by MTCNN 'confidence' score, descending
+    for face in sorted(faces, key=lambda x: x['confidence'], reverse=True):
+        # skip any faces with too low 'confidence' score
+        if face['confidence'] < confidence:
+            print('face confidence too low!', face['confidence'])
+            continue
+        minX, minY, width, height = face['box']                
+        maxX, maxY = minX + width, minY + height
+
+        #skip any faces that are too small
+        if width/img.width < TOO_SMALL:
+            print('face too small!')
+            continue
+        
+        #get the pixels from the image corresponding to the MTCNN bounding box & resize them.
+        facePixels = data[minY:maxY, minX:maxX]
+        faceImg = Image.fromarray(facePixels)
+        faceImg = faceImg.resize(size)
+
+        #normalize the bounding box coordinates to 0 -> 1 range
+        bboxes.append( (minX / img.width, minY / img.height, maxX / img.width,  maxY / img.height) )
+        pixels.append( np.asarray(faceImg) )
+              
+    return ( np.array(bboxes), np.array(pixels))
+
+# extract all face data (bounding boxes and face pixels) from files in the specified directory
 def extract_all_faces(dir='../data/faces', size = (224,224)):
     filenames = os.listdir(dir)
 
@@ -25,59 +65,15 @@ def extract_all_faces(dir='../data/faces', size = (224,224)):
         if len(split) > 2:
             return split[0] + '-' + split[1]
         return split[0]
-        
+    
+    # get only the 'normal' employee photos, extract face data & the employee names
     data =  np.array([extract_faces(os.path.join(dir, x))[1] for x in filenames if x.endswith('-smile.jpg')])
     names = [process_names(x) for x in filenames if x.endswith('-smile.jpg')]  
     data = data.reshape((-1,) + data.shape[2:])
     return (names, data)
     
 
-def extract_faces(filepath, size = (224,224), confidence=0.85, jitter=False):
-    print('extracting face from image.')
-    img = Image.open(filepath).convert('RGB')
-    data = np.asarray(img)
-    extractor = load_extractor()
-    faces = extractor.detect_faces(data)
 
-    results = []
-    for face in faces:
-        bboxes = []
-        pixels = []
-        if face['confidence'] < confidence:
-            print('face confidence too low!', face['confidence'])
-            continue
-        for i in range(SAMPLES):
-            minX, minY, width, height = face['box']                
-            maxX, maxY = minX + width, minY + height
-            # width = int(width * EXPANSION)
-            # height = int(height * EXPANSION)
-            # minX = max(0, minX - width)
-            # minY = max(0, minY - height)
-            # maxX = min(img.width, maxX + width)
-            # maxY = min(img.height, maxY + height)
-            if jitter:
-                minX += random.randrange(-JITTER, JITTER)
-                minY += random.randrange(-JITTER, JITTER)
-                maxX += random.randrange(-JITTER, JITTER)
-                maxY += random.randrange(-JITTER, JITTER)
-            minX = max(0, minX)
-            minY = max(0, minY)
-            maxX = min(img.width, maxX)
-            maxY = min(img.height, maxY)
-            facePixels = data[minY:maxY, minX:maxX]
-            faceImg = Image.fromarray(facePixels)
-            faceImg = faceImg.resize(size)
-            #faceImg = faceImg.rotate(random.uniform(-ANGLE, ANGLE))
-            #faceImg.show()
-            bboxes.append((minX / img.width, minY / img.height, maxX / img.width,  maxY / img.height))
-            pixels.append(np.asarray(faceImg))
-        results.append({ 'bboxes' : np.array(bboxes), 'pixels' : np.array(pixels)})
-            #return (np.array( minX / img.width, minY / img.height, maxX / img.width,  maxY / img.height), np.asarray(faceImg))    
-
-    print('num faces: ', len(results))
-    return ( np.array([x['bboxes'] for x in results]), np.array([x['pixels'] for x in results]))
-    # bboxes (x1,y1,x2,y2) & pixels
-    #return (np.array([ x[0] for x in results ]), np.array([ x[1] for x in results ]))
                 
 
 if __name__ == "__main__":

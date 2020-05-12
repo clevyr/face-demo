@@ -9,7 +9,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace FaceIdentifierService {
+namespace Services {
 
   /// <summary>Holder for reflection information generated from face-identifier.proto</summary>
   public static partial class FaceIdentifierReflection {
@@ -36,19 +36,19 @@ namespace FaceIdentifierService {
             "ci5JZGVudGlmeVJlcGx5LklkZW50aWZ5UmVzdWx0LkJvdW5kaW5nQm94Gi4K",
             "DElkZW50aWZ5SXRlbRIMCgRuYW1lGAEgASgJEhAKCGRpc3RhbmNlGAIgASgB",
             "GkUKC0JvdW5kaW5nQm94EgwKBG1pblgYASABKAESDAoEbWluWRgCIAEoARIM",
-            "CgRtYXhYGAMgASgBEgwKBG1heFkYBCABKAEytAEKDkZhY2VJZGVudGlmaWVy",
-            "EkoKCElkZW50aWZ5Eh8uRmFjZUlkZW50aWZpZXIuSWRlbnRpZnlSZXF1ZXN0",
-            "Gh0uRmFjZUlkZW50aWZpZXIuSWRlbnRpZnlSZXBseRJWCg1JZGVudGlmeUlt",
-            "YWdlEiQuRmFjZUlkZW50aWZpZXIuSWRlbnRpZnlJbWFnZVJlcXVlc3QaHS5G",
-            "YWNlSWRlbnRpZmllci5JZGVudGlmeVJlcGx5KAFCGKoCFUZhY2VJZGVudGlm",
-            "aWVyU2VydmljZWIGcHJvdG8z"));
+            "CgRtYXhYGAMgASgBEgwKBG1heFkYBCABKAEysAEKCklkZW50aWZpZXISSgoI",
+            "SWRlbnRpZnkSHy5GYWNlSWRlbnRpZmllci5JZGVudGlmeVJlcXVlc3QaHS5G",
+            "YWNlSWRlbnRpZmllci5JZGVudGlmeVJlcGx5ElYKDUlkZW50aWZ5SW1hZ2US",
+            "JC5GYWNlSWRlbnRpZmllci5JZGVudGlmeUltYWdlUmVxdWVzdBodLkZhY2VJ",
+            "ZGVudGlmaWVyLklkZW50aWZ5UmVwbHkoAUILqgIIU2VydmljZXNiBnByb3Rv",
+            "Mw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::FaceIdentifierService.IdentifyRequest), global::FaceIdentifierService.IdentifyRequest.Parser, new[]{ "Filepath" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::FaceIdentifierService.IdentifyImageRequest), global::FaceIdentifierService.IdentifyImageRequest.Parser, new[]{ "Image" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::FaceIdentifierService.IdentifyReply), global::FaceIdentifierService.IdentifyReply.Parser, new[]{ "Results" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::FaceIdentifierService.IdentifyReply.Types.IdentifyResult), global::FaceIdentifierService.IdentifyReply.Types.IdentifyResult.Parser, new[]{ "Nearest", "Furthest", "BoundingBox" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::FaceIdentifierService.IdentifyReply.Types.IdentifyResult.Types.IdentifyItem), global::FaceIdentifierService.IdentifyReply.Types.IdentifyResult.Types.IdentifyItem.Parser, new[]{ "Name", "Distance" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::FaceIdentifierService.IdentifyReply.Types.IdentifyResult.Types.BoundingBox), global::FaceIdentifierService.IdentifyReply.Types.IdentifyResult.Types.BoundingBox.Parser, new[]{ "MinX", "MinY", "MaxX", "MaxY" }, null, null, null, null)})})
+            new pbr::GeneratedClrTypeInfo(typeof(global::Services.IdentifyRequest), global::Services.IdentifyRequest.Parser, new[]{ "Filepath" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Services.IdentifyImageRequest), global::Services.IdentifyImageRequest.Parser, new[]{ "Image" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Services.IdentifyReply), global::Services.IdentifyReply.Parser, new[]{ "Results" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Services.IdentifyReply.Types.IdentifyResult), global::Services.IdentifyReply.Types.IdentifyResult.Parser, new[]{ "Nearest", "Furthest", "BoundingBox" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Services.IdentifyReply.Types.IdentifyResult.Types.IdentifyItem), global::Services.IdentifyReply.Types.IdentifyResult.Types.IdentifyItem.Parser, new[]{ "Name", "Distance" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Services.IdentifyReply.Types.IdentifyResult.Types.BoundingBox), global::Services.IdentifyReply.Types.IdentifyResult.Types.BoundingBox.Parser, new[]{ "MinX", "MinY", "MaxX", "MaxY" }, null, null, null, null)})})
           }));
     }
     #endregion
@@ -66,7 +66,7 @@ namespace FaceIdentifierService {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::FaceIdentifierService.FaceIdentifierReflection.Descriptor.MessageTypes[0]; }
+      get { return global::Services.FaceIdentifierReflection.Descriptor.MessageTypes[0]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -198,7 +198,7 @@ namespace FaceIdentifierService {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::FaceIdentifierService.FaceIdentifierReflection.Descriptor.MessageTypes[1]; }
+      get { return global::Services.FaceIdentifierReflection.Descriptor.MessageTypes[1]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -330,7 +330,7 @@ namespace FaceIdentifierService {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::FaceIdentifierService.FaceIdentifierReflection.Descriptor.MessageTypes[2]; }
+      get { return global::Services.FaceIdentifierReflection.Descriptor.MessageTypes[2]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -358,11 +358,11 @@ namespace FaceIdentifierService {
 
     /// <summary>Field number for the "results" field.</summary>
     public const int ResultsFieldNumber = 1;
-    private static readonly pb::FieldCodec<global::FaceIdentifierService.IdentifyReply.Types.IdentifyResult> _repeated_results_codec
-        = pb::FieldCodec.ForMessage(10, global::FaceIdentifierService.IdentifyReply.Types.IdentifyResult.Parser);
-    private readonly pbc::RepeatedField<global::FaceIdentifierService.IdentifyReply.Types.IdentifyResult> results_ = new pbc::RepeatedField<global::FaceIdentifierService.IdentifyReply.Types.IdentifyResult>();
+    private static readonly pb::FieldCodec<global::Services.IdentifyReply.Types.IdentifyResult> _repeated_results_codec
+        = pb::FieldCodec.ForMessage(10, global::Services.IdentifyReply.Types.IdentifyResult.Parser);
+    private readonly pbc::RepeatedField<global::Services.IdentifyReply.Types.IdentifyResult> results_ = new pbc::RepeatedField<global::Services.IdentifyReply.Types.IdentifyResult>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::FaceIdentifierService.IdentifyReply.Types.IdentifyResult> Results {
+    public pbc::RepeatedField<global::Services.IdentifyReply.Types.IdentifyResult> Results {
       get { return results_; }
     }
 
@@ -453,7 +453,7 @@ namespace FaceIdentifierService {
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public static pbr::MessageDescriptor Descriptor {
-          get { return global::FaceIdentifierService.IdentifyReply.Descriptor.NestedTypes[0]; }
+          get { return global::Services.IdentifyReply.Descriptor.NestedTypes[0]; }
         }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -483,9 +483,9 @@ namespace FaceIdentifierService {
 
         /// <summary>Field number for the "nearest" field.</summary>
         public const int NearestFieldNumber = 1;
-        private global::FaceIdentifierService.IdentifyReply.Types.IdentifyResult.Types.IdentifyItem nearest_;
+        private global::Services.IdentifyReply.Types.IdentifyResult.Types.IdentifyItem nearest_;
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public global::FaceIdentifierService.IdentifyReply.Types.IdentifyResult.Types.IdentifyItem Nearest {
+        public global::Services.IdentifyReply.Types.IdentifyResult.Types.IdentifyItem Nearest {
           get { return nearest_; }
           set {
             nearest_ = value;
@@ -494,9 +494,9 @@ namespace FaceIdentifierService {
 
         /// <summary>Field number for the "furthest" field.</summary>
         public const int FurthestFieldNumber = 2;
-        private global::FaceIdentifierService.IdentifyReply.Types.IdentifyResult.Types.IdentifyItem furthest_;
+        private global::Services.IdentifyReply.Types.IdentifyResult.Types.IdentifyItem furthest_;
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public global::FaceIdentifierService.IdentifyReply.Types.IdentifyResult.Types.IdentifyItem Furthest {
+        public global::Services.IdentifyReply.Types.IdentifyResult.Types.IdentifyItem Furthest {
           get { return furthest_; }
           set {
             furthest_ = value;
@@ -505,9 +505,9 @@ namespace FaceIdentifierService {
 
         /// <summary>Field number for the "boundingBox" field.</summary>
         public const int BoundingBoxFieldNumber = 3;
-        private global::FaceIdentifierService.IdentifyReply.Types.IdentifyResult.Types.BoundingBox boundingBox_;
+        private global::Services.IdentifyReply.Types.IdentifyResult.Types.BoundingBox boundingBox_;
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public global::FaceIdentifierService.IdentifyReply.Types.IdentifyResult.Types.BoundingBox BoundingBox {
+        public global::Services.IdentifyReply.Types.IdentifyResult.Types.BoundingBox BoundingBox {
           get { return boundingBox_; }
           set {
             boundingBox_ = value;
@@ -594,19 +594,19 @@ namespace FaceIdentifierService {
           }
           if (other.nearest_ != null) {
             if (nearest_ == null) {
-              Nearest = new global::FaceIdentifierService.IdentifyReply.Types.IdentifyResult.Types.IdentifyItem();
+              Nearest = new global::Services.IdentifyReply.Types.IdentifyResult.Types.IdentifyItem();
             }
             Nearest.MergeFrom(other.Nearest);
           }
           if (other.furthest_ != null) {
             if (furthest_ == null) {
-              Furthest = new global::FaceIdentifierService.IdentifyReply.Types.IdentifyResult.Types.IdentifyItem();
+              Furthest = new global::Services.IdentifyReply.Types.IdentifyResult.Types.IdentifyItem();
             }
             Furthest.MergeFrom(other.Furthest);
           }
           if (other.boundingBox_ != null) {
             if (boundingBox_ == null) {
-              BoundingBox = new global::FaceIdentifierService.IdentifyReply.Types.IdentifyResult.Types.BoundingBox();
+              BoundingBox = new global::Services.IdentifyReply.Types.IdentifyResult.Types.BoundingBox();
             }
             BoundingBox.MergeFrom(other.BoundingBox);
           }
@@ -623,21 +623,21 @@ namespace FaceIdentifierService {
                 break;
               case 10: {
                 if (nearest_ == null) {
-                  Nearest = new global::FaceIdentifierService.IdentifyReply.Types.IdentifyResult.Types.IdentifyItem();
+                  Nearest = new global::Services.IdentifyReply.Types.IdentifyResult.Types.IdentifyItem();
                 }
                 input.ReadMessage(Nearest);
                 break;
               }
               case 18: {
                 if (furthest_ == null) {
-                  Furthest = new global::FaceIdentifierService.IdentifyReply.Types.IdentifyResult.Types.IdentifyItem();
+                  Furthest = new global::Services.IdentifyReply.Types.IdentifyResult.Types.IdentifyItem();
                 }
                 input.ReadMessage(Furthest);
                 break;
               }
               case 26: {
                 if (boundingBox_ == null) {
-                  BoundingBox = new global::FaceIdentifierService.IdentifyReply.Types.IdentifyResult.Types.BoundingBox();
+                  BoundingBox = new global::Services.IdentifyReply.Types.IdentifyResult.Types.BoundingBox();
                 }
                 input.ReadMessage(BoundingBox);
                 break;
@@ -658,7 +658,7 @@ namespace FaceIdentifierService {
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
             public static pbr::MessageDescriptor Descriptor {
-              get { return global::FaceIdentifierService.IdentifyReply.Types.IdentifyResult.Descriptor.NestedTypes[0]; }
+              get { return global::Services.IdentifyReply.Types.IdentifyResult.Descriptor.NestedTypes[0]; }
             }
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -815,7 +815,7 @@ namespace FaceIdentifierService {
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
             public static pbr::MessageDescriptor Descriptor {
-              get { return global::FaceIdentifierService.IdentifyReply.Types.IdentifyResult.Descriptor.NestedTypes[1]; }
+              get { return global::Services.IdentifyReply.Types.IdentifyResult.Descriptor.NestedTypes[1]; }
             }
 
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

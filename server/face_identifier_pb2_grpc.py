@@ -4,7 +4,7 @@ import grpc
 import face_identifier_pb2 as face__identifier__pb2
 
 
-class FaceIdentifierStub(object):
+class IdentifierStub(object):
     """Missing associated documentation comment in .proto file"""
 
     def __init__(self, channel):
@@ -14,18 +14,18 @@ class FaceIdentifierStub(object):
             channel: A grpc.Channel.
         """
         self.Identify = channel.unary_unary(
-                '/FaceIdentifier.FaceIdentifier/Identify',
+                '/FaceIdentifier.Identifier/Identify',
                 request_serializer=face__identifier__pb2.IdentifyRequest.SerializeToString,
                 response_deserializer=face__identifier__pb2.IdentifyReply.FromString,
                 )
         self.IdentifyImage = channel.stream_unary(
-                '/FaceIdentifier.FaceIdentifier/IdentifyImage',
+                '/FaceIdentifier.Identifier/IdentifyImage',
                 request_serializer=face__identifier__pb2.IdentifyImageRequest.SerializeToString,
                 response_deserializer=face__identifier__pb2.IdentifyReply.FromString,
                 )
 
 
-class FaceIdentifierServicer(object):
+class IdentifierServicer(object):
     """Missing associated documentation comment in .proto file"""
 
     def Identify(self, request, context):
@@ -41,7 +41,7 @@ class FaceIdentifierServicer(object):
         raise NotImplementedError('Method not implemented!')
 
 
-def add_FaceIdentifierServicer_to_server(servicer, server):
+def add_IdentifierServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'Identify': grpc.unary_unary_rpc_method_handler(
                     servicer.Identify,
@@ -55,12 +55,12 @@ def add_FaceIdentifierServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'FaceIdentifier.FaceIdentifier', rpc_method_handlers)
+            'FaceIdentifier.Identifier', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
  # This class is part of an EXPERIMENTAL API.
-class FaceIdentifier(object):
+class Identifier(object):
     """Missing associated documentation comment in .proto file"""
 
     @staticmethod
@@ -73,7 +73,7 @@ class FaceIdentifier(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/FaceIdentifier.FaceIdentifier/Identify',
+        return grpc.experimental.unary_unary(request, target, '/FaceIdentifier.Identifier/Identify',
             face__identifier__pb2.IdentifyRequest.SerializeToString,
             face__identifier__pb2.IdentifyReply.FromString,
             options, channel_credentials,
@@ -89,7 +89,7 @@ class FaceIdentifier(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.stream_unary(request_iterator, target, '/FaceIdentifier.FaceIdentifier/IdentifyImage',
+        return grpc.experimental.stream_unary(request_iterator, target, '/FaceIdentifier.Identifier/IdentifyImage',
             face__identifier__pb2.IdentifyImageRequest.SerializeToString,
             face__identifier__pb2.IdentifyReply.FromString,
             options, channel_credentials,

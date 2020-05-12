@@ -1,0 +1,124 @@
+﻿@inject Services.Identifier.IdentifierClient FaceIdentifierClient;
+<style>
+
+
+
+
+    .img-overlay-wrap {
+        position: relative;
+        display: inline-block;
+        transition: transform 150ms ease-in-out;
+        max-width: 200px;
+    }
+
+        .img-overlay-wrap img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .img-overlay-wrap svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+</style>
+
+<div class="row">
+    @if (Employee.Image != null)
+    {
+        <div class="col">
+            <div class="img-overlay-wrap">
+                <img src=@ImgSrcFromBytes(Employee.GetImageData()) />
+                @if (Employee.Reply != null)
+                {
+                    <svg width="100%" height="100%" style="position:absolute;left:0;top:0">
+                        @foreach (var result in Employee.Reply.Results)
+                        {
+                            var width = 100 * (result.BoundingBox.MaxX - result.BoundingBox.MinX);
+                            var height = 100 * (result.BoundingBox.MaxY - result.BoundingBox.MinY);
+                            var x = result.BoundingBox.MinX * 100;
+                            var y = result.BoundingBox.MinY * 100;
+
+                            <rect width="@width%" height="@height%" x="@x%" y="@y%" style="stroke-width:1;stroke:rgb(0, 255, 144)" fill-opacity="0" />
+                        }
+                    </svg>
+                }
+            </div>
+        </div>
+        if (Reply == null)
+        {
+            <div class="spinner-border m-5" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        }
+        else
+        {
+            foreach (var result in Reply.Results.Take(1))
+            {
+<div class="col">
+    @if (Employee.Correct)
+    {
+        <div>Correct!</div>
+    }
+    else
+    {
+        <div>Incorrect!</div>
+    }
+
+</div>
+                <div class="col">
+                    <label>Closest</label>
+                    <img src=@FileDataFromName(result.Nearest.Name) style="max-height:200px" />
+                    <div>@result.Nearest.Distance</div>
+                </div>
+                <div class="col">
+                    <label>Furthest</label>
+                    <img src=@FileDataFromName(result.Furthest.Name) style="max-height:200px" />
+                    <div>@result.Furthest.Distance</div>
+                </div>
+            }
+        }
+
+    }
+</div>
+
+
+
+@code {
+    [Parameter]
+    public EmployeeAndResult Employee { get; set; }
+
+    Services.IdentifyReply Reply;
+
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            return Test();
+        }
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+    private async Task Test()
+    {
+        await Employee.GetResultAsync(FaceIdentifierClient);
+        Reply = Employee.Reply;
+        this.StateHasChanged();
+    }
+    private string ImgSrcFromBytes(byte[] image)
+    {
+        var base64 = Convert.ToBase64String(image);
+        return String.Format("data:image/jpg;base64,{0}", base64);
+    }
+
+    private string FileDataFromName(string name)
+    {
+        var filePath = $"../../data/faces/{name}-smile.jpg";
+        var bytes = System.IO.File.ReadAllBytes(filePath);
+        return ImgSrcFromBytes(bytes);
+
+    }
+
+}
+

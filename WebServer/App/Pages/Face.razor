@@ -1,1 +1,24 @@
-﻿
+﻿@page "/employees"
+
+@using System.IO;
+@using System.Drawing;
+
+
+
+<h1>Employees</h1>
+
+@foreach( var item in Employees)
+{
+    <EmployeeComponent Employee="@item"/>
+
+}
+
+@code{
+    List<EmployeeAndResult> Employees { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Employees = EmployeeAndResult.LoadEmployees();
+        base.OnInitialized();
+    }
+}

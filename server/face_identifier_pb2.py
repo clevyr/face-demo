@@ -17,8 +17,8 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='face-identifier.proto',
   package='FaceIdentifier',
   syntax='proto3',
-  serialized_options=b'\252\002\025FaceIdentifierService',
-  serialized_pb=b'\n\x15\x66\x61\x63\x65-identifier.proto\x12\x0e\x46\x61\x63\x65Identifier\"#\n\x0fIdentifyRequest\x12\x10\n\x08\x66ilepath\x18\x01 \x01(\t\"%\n\x14IdentifyImageRequest\x12\r\n\x05image\x18\x01 \x01(\x0c\"\xc0\x03\n\rIdentifyReply\x12=\n\x07results\x18\x01 \x03(\x0b\x32,.FaceIdentifier.IdentifyReply.IdentifyResult\x1a\xef\x02\n\x0eIdentifyResult\x12J\n\x07nearest\x18\x01 \x01(\x0b\x32\x39.FaceIdentifier.IdentifyReply.IdentifyResult.IdentifyItem\x12K\n\x08\x66urthest\x18\x02 \x01(\x0b\x32\x39.FaceIdentifier.IdentifyReply.IdentifyResult.IdentifyItem\x12M\n\x0b\x62oundingBox\x18\x03 \x01(\x0b\x32\x38.FaceIdentifier.IdentifyReply.IdentifyResult.BoundingBox\x1a.\n\x0cIdentifyItem\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x10\n\x08\x64istance\x18\x02 \x01(\x01\x1a\x45\n\x0b\x42oundingBox\x12\x0c\n\x04minX\x18\x01 \x01(\x01\x12\x0c\n\x04minY\x18\x02 \x01(\x01\x12\x0c\n\x04maxX\x18\x03 \x01(\x01\x12\x0c\n\x04maxY\x18\x04 \x01(\x01\x32\xb4\x01\n\x0e\x46\x61\x63\x65Identifier\x12J\n\x08Identify\x12\x1f.FaceIdentifier.IdentifyRequest\x1a\x1d.FaceIdentifier.IdentifyReply\x12V\n\rIdentifyImage\x12$.FaceIdentifier.IdentifyImageRequest\x1a\x1d.FaceIdentifier.IdentifyReply(\x01\x42\x18\xaa\x02\x15\x46\x61\x63\x65IdentifierServiceb\x06proto3'
+  serialized_options=b'\252\002\010Services',
+  serialized_pb=b'\n\x15\x66\x61\x63\x65-identifier.proto\x12\x0e\x46\x61\x63\x65Identifier\"#\n\x0fIdentifyRequest\x12\x10\n\x08\x66ilepath\x18\x01 \x01(\t\"%\n\x14IdentifyImageRequest\x12\r\n\x05image\x18\x01 \x01(\x0c\"\xc0\x03\n\rIdentifyReply\x12=\n\x07results\x18\x01 \x03(\x0b\x32,.FaceIdentifier.IdentifyReply.IdentifyResult\x1a\xef\x02\n\x0eIdentifyResult\x12J\n\x07nearest\x18\x01 \x01(\x0b\x32\x39.FaceIdentifier.IdentifyReply.IdentifyResult.IdentifyItem\x12K\n\x08\x66urthest\x18\x02 \x01(\x0b\x32\x39.FaceIdentifier.IdentifyReply.IdentifyResult.IdentifyItem\x12M\n\x0b\x62oundingBox\x18\x03 \x01(\x0b\x32\x38.FaceIdentifier.IdentifyReply.IdentifyResult.BoundingBox\x1a.\n\x0cIdentifyItem\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x10\n\x08\x64istance\x18\x02 \x01(\x01\x1a\x45\n\x0b\x42oundingBox\x12\x0c\n\x04minX\x18\x01 \x01(\x01\x12\x0c\n\x04minY\x18\x02 \x01(\x01\x12\x0c\n\x04maxX\x18\x03 \x01(\x01\x12\x0c\n\x04maxY\x18\x04 \x01(\x01\x32\xb0\x01\n\nIdentifier\x12J\n\x08Identify\x12\x1f.FaceIdentifier.IdentifyRequest\x1a\x1d.FaceIdentifier.IdentifyReply\x12V\n\rIdentifyImage\x12$.FaceIdentifier.IdentifyImageRequest\x1a\x1d.FaceIdentifier.IdentifyReply(\x01\x42\x0b\xaa\x02\x08Servicesb\x06proto3'
 )
 
 
@@ -308,18 +308,18 @@ _sym_db.RegisterMessage(IdentifyReply.IdentifyResult.BoundingBox)
 
 DESCRIPTOR._options = None
 
-_FACEIDENTIFIER = _descriptor.ServiceDescriptor(
-  name='FaceIdentifier',
-  full_name='FaceIdentifier.FaceIdentifier',
+_IDENTIFIER = _descriptor.ServiceDescriptor(
+  name='Identifier',
+  full_name='FaceIdentifier.Identifier',
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
   serialized_start=569,
-  serialized_end=749,
+  serialized_end=745,
   methods=[
   _descriptor.MethodDescriptor(
     name='Identify',
-    full_name='FaceIdentifier.FaceIdentifier.Identify',
+    full_name='FaceIdentifier.Identifier.Identify',
     index=0,
     containing_service=None,
     input_type=_IDENTIFYREQUEST,
@@ -328,7 +328,7 @@ _FACEIDENTIFIER = _descriptor.ServiceDescriptor(
   ),
   _descriptor.MethodDescriptor(
     name='IdentifyImage',
-    full_name='FaceIdentifier.FaceIdentifier.IdentifyImage',
+    full_name='FaceIdentifier.Identifier.IdentifyImage',
     index=1,
     containing_service=None,
     input_type=_IDENTIFYIMAGEREQUEST,
@@ -336,8 +336,8 @@ _FACEIDENTIFIER = _descriptor.ServiceDescriptor(
     serialized_options=None,
   ),
 ])
-_sym_db.RegisterServiceDescriptor(_FACEIDENTIFIER)
+_sym_db.RegisterServiceDescriptor(_IDENTIFIER)
 
-DESCRIPTOR.services_by_name['FaceIdentifier'] = _FACEIDENTIFIER
+DESCRIPTOR.services_by_name['Identifier'] = _IDENTIFIER
 
 # @@protoc_insertion_point(module_scope)

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package FaceIdentifier;
 
-option csharp_namespace = "FaceIdentifierService";
+option csharp_namespace = "Services";
 
-service FaceIdentifier {
+service Identifier {
   rpc Identify (IdentifyRequest) returns (IdentifyReply);
   rpc IdentifyImage(stream IdentifyImageRequest) returns (IdentifyReply);
 }

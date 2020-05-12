@@ -50,7 +50,7 @@ namespace FaceIdentifier
 
             AppContext.SetSwitch(
                 "System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-            services.AddGrpcClient<FaceIdentifierService.FaceIdentifier.FaceIdentifierClient>(o =>
+            services.AddGrpcClient<Services.Identifier.IdentifierClient>(o =>
             {
                 o.Address = new Uri("http://127.0.0.1:5002");
 

@@ -6,7 +6,7 @@ import time
 import os
 import face_identifier_pb2
 import face_identifier_pb2_grpc
-
+import io
 from compare_features import compare_features
 from extract_faces import load_extractor
 from extract_features import load_model
@@ -15,7 +15,7 @@ from extract_features import load_model
 
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 
-class FaceIdentifier(face_identifier_pb2_grpc.FaceIdentifierServicer):
+class FaceIdentifier(face_identifier_pb2_grpc.IdentifierServicer):
                             
 
     def Identify(self, request, context):
@@ -32,12 +32,11 @@ class FaceIdentifier(face_identifier_pb2_grpc.FaceIdentifierServicer):
         
 
         imageBytes = b''
-
         for chunk in request_iterator:
             imageBytes = imageBytes + chunk.image
 
         
-        import io
+        
                 
         #test = file.read()
         #print(len(test))       
@@ -63,7 +62,7 @@ class FaceIdentifier(face_identifier_pb2_grpc.FaceIdentifierServicer):
 def serve():
     
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=1))
-    face_identifier_pb2_grpc.add_FaceIdentifierServicer_to_server(FaceIdentifier(), server)
+    face_identifier_pb2_grpc.add_IdentifierServicer_to_server(FaceIdentifier(), server)
     server.add_insecure_port('127.0.0.1:5002')
     server.start()
     #load_model()

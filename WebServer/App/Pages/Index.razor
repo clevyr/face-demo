@@ -1,9 +1,9 @@
 ﻿@page "/"
 
-@using FaceIdentifierService
+
 @using System.IO;
 @using System.Drawing;
-@inject FaceIdentifierService.FaceIdentifier.FaceIdentifierClient FaceIdentifierClient
+@inject Services.Identifier.IdentifierClient FaceIdentifierClient
 
 
 <style>
@@ -29,7 +29,7 @@
 
 
 <div class="row">
-    <InputFile OnChange=@HandleFileSelectedAsync />
+    <InputFile OnChange=@HandleFileSelectedAsync accept="image/jpg, image/gif"/>
 </div>
 <div class="row">
     @if (FileData != null)
@@ -81,12 +81,12 @@
     <div class="col">
         <label>Closest</label>
         <img src=@FileDataFromName(result.Nearest.Name) style="max-height:200px" />
-        <span>@result.Nearest.Distance</span>
+        <div>@result.Nearest.Distance</div>
     </div>
     <div class="col">
         <label>Furthest</label>
         <img src=@FileDataFromName(result.Furthest.Name) style="max-height:200px" />
-        <span>@result.Furthest.Distance</span>
+        <div>@result.Furthest.Distance</div>
     </div>
 </div>
 
@@ -97,10 +97,10 @@
 @*<button class="btn btn-primary" @onclick=@TestService>Click me</button>*@
 
 @code {
-    FaceIdentifierService.IdentifyReply Reply;
+    Services.IdentifyReply Reply;
     IFileListEntry File;
     byte[] FileData;
-    Bitmap Image;
+    Image Image;
     bool Loading = false;
     private async Task HandleFileSelectedAsync(IFileListEntry[] files)
     {
@@ -108,11 +108,15 @@
         Reply = null;
         StateHasChanged();
         File = files.First();
-        var stream = await File.ReadAllAsync(maxSizeBytes: 1000000000);
-        FileData = new byte[stream.Length];
-        await stream.ReadAsync(FileData, 0, (int)stream.Length);
-        stream.Seek(0, SeekOrigin.Begin);
-        Image = new Bitmap(stream);
+        var stream = await File.ReadAllAsync();
+        Image = System.Drawing.Bitmap.FromStream(stream);
+
+        using (MemoryStream ms = new MemoryStream())
+        {
+            Image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+            FileData = ms.ToArray();
+        }
+
         await TestService();
         Loading = false;
     }
@@ -123,7 +127,7 @@
         return String.Format("data:image/jpg;base64,{0}", base64);
     }
 
-    private string ImgSrcFromResult(IdentifyReply.Types.IdentifyResult result)
+    private string ImgSrcFromResult(Services.IdentifyReply.Types.IdentifyResult result)
     {
         var bitmap = CropByRect(Image, new Rectangle
         {
@@ -165,7 +169,7 @@
         {
             var count = numChunks == 1 ? Math.Min(FileData.Length, chunkSize) : Math.Min(chunkSize, (FileData.Length - (i * chunkSize)));
             var byteString = Google.Protobuf.ByteString.CopyFrom(FileData, i * chunkSize, count);
-            var chunk = new IdentifyImageRequest { Image = byteString };
+            var chunk = new Services.IdentifyImageRequest { Image = byteString };
             await call.RequestStream.WriteAsync(chunk);
         }
         await call.RequestStream.CompleteAsync();
@@ -176,7 +180,7 @@
         Loading = false;
     }
 
-    private Bitmap CropByRect(Bitmap b, Rectangle r)
+    private Bitmap CropByRect(Image b, Rectangle r)
     {
         Bitmap nb = new Bitmap(r.Width, r.Height);
         using (Graphics g = Graphics.FromImage(nb))
