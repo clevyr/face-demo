@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 
 from concurrent import futures
 import logging
@@ -60,10 +61,9 @@ class FaceIdentifier(face_identifier_pb2_grpc.IdentifierServicer):
         return response
 
 def serve():
-    
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=1))
     face_identifier_pb2_grpc.add_IdentifierServicer_to_server(FaceIdentifier(), server)
-    server.add_insecure_port('127.0.0.1:5002')
+    server.add_insecure_port('0.0.0.0:5002')
     server.start()
     #load_model()
     #load_extractor()

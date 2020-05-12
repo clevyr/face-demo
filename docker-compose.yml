@@ -1,0 +1,29 @@
+version: '2.4'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: WebServer/Dockerfile
+    environment:
+      EdxEnvironment: development
+      GRPC_URL: http://aiserver:5002
+    image: us.gcr.io/face-demo-motus/face-demo/app
+    ports:
+      - 5000:5000
+      - 5001:5001
+
+  aiserver:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    environment:
+      EdxEnvironment: set
+    image: us.gcr.io/face-demo-motus/face-demo/aiserver
+    ports:
+      - 5002:5002
+    volumes:
+      - weights:/root/.keras
+
+volumes:
+  weights:

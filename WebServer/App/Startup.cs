@@ -52,9 +52,8 @@ namespace FaceIdentifier
                 "System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
             services.AddGrpcClient<Services.Identifier.IdentifierClient>(o =>
             {
-                o.Address = new Uri("http://127.0.0.1:5002");
-
-
+                var grpcUrl = Environment.GetEnvironmentVariable("GRPC_URL") ?? "http://127.0.0.1:5002";
+                o.Address = new Uri(grpcUrl);
             });
         }
 
