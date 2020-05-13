@@ -1,16 +1,17 @@
-FROM continuumio/miniconda3
-SHELL ["/bin/bash", "-c"]
+FROM python:3.7-slim
 
-ARG PYTHONDONTWRITEBYTECODE=true
-
-COPY ./server/face-demo.yml .
+COPY ./server/requirements.txt ./
 
 RUN set -x \
-    && conda env update -f face-demo.yml \
-    && conda clean -afy \
-    && find /opt/conda/ -follow -type f -name '*.a' -delete \
-    && find /opt/conda/ -follow -type f -name '*.pyc' -delete \
-    && find /opt/conda/ -follow -type f -name '*.js.map' -delete
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+        libglib2.0-0 \
+        libsm6 \
+        libxext6 \
+        libxrender1 \
+        python3-keras \
+    && pip3 install --no-cache-dir -r requirements.txt \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -21,4 +22,4 @@ COPY ./server/ ./server/
 WORKDIR /app/server
 
 STOPSIGNAL SIGKILL
-CMD ["conda", "run", "-n", "face-demo", "python", "./server.py"]
+CMD ["python", "./server.py"]
