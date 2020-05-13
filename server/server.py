@@ -11,7 +11,7 @@ import io
 from compare_features import compare_features
 from extract_faces import load_extractor
 from extract_features import load_model
-
+import gc
 #os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
@@ -57,7 +57,7 @@ class FaceIdentifier(face_identifier_pb2_grpc.IdentifierServicer):
             item.furthest.name = result['furthest']['name']
             item.furthest.distance = result['furthest']['distance']
         
-        
+        gc.collect()
         return response
 
 def serve():
