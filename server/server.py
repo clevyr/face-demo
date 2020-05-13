@@ -36,13 +36,10 @@ class FaceIdentifier(face_identifier_pb2_grpc.IdentifierServicer):
         for chunk in request_iterator:
             imageBytes = imageBytes + chunk.image
 
-        
-        
-                
-        #test = file.read()
-        #print(len(test))       
-        # loop over the predicted scores and class labels
-        results = compare_features(io.BytesIO(imageBytes))
+             
+        f = io.BytesIO(imageBytes)
+        results = compare_features(f)
+        f.close()
 
         response = face_identifier_pb2.IdentifyReply()
         for result in results:
@@ -58,6 +55,8 @@ class FaceIdentifier(face_identifier_pb2_grpc.IdentifierServicer):
             item.furthest.distance = result['furthest']['distance']
         
         gc.collect()
+        #from tensorflow.keras.backend import clear_session
+        #clear_session() 
         return response
 
 def serve():

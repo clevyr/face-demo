@@ -5,31 +5,33 @@ from keras.layers import GlobalAveragePooling2D, GlobalMaxPooling2D, Concatenate
 from keras.engine import Model
 from extract_faces import extract_all_faces, extract_faces
 import numpy as np
+import tensorflow as tf
 
 FEATURES = 'names_and_features.p'
 MODEL = None
 
-def load_model():    
+#load the 'senet50' VGGFace model and modify it slightly
+def load_model():
     global MODEL
     if MODEL is None:
         MODEL = VGGFace(model='senet50', include_top=False, input_shape=(224, 224, 3), pooling=None)
         output = MODEL.get_layer('add_16').output
-        ## output = MODEL.layers[-1].output
         x1 = GlobalAveragePooling2D()(output)
         x2 = GlobalMaxPooling2D()(output)
         x = Concatenate()([x1,x2])
         MODEL = Model(MODEL.input, x)
-        MODEL.summary()
-
     return MODEL
 
+# get all the employee faces from mtcnn and run them through our VGGFace model
+# to get each employee's feature vector.
 def extract_all_features():
     model = load_model()
     names,faces = extract_all_faces()
     
-    
     return (names, model.predict(faces))
-    
+
+# get the bounding box & face pixels from the specified filepath and run them trhough
+# the VGGFace model to get each face's feature vector.
 def extract_features(filepath):
     
     bboxes,faces = extract_faces(filepath)
@@ -38,19 +40,21 @@ def extract_features(filepath):
     print('extracting features from faces')       
     return (bboxes, model.predict(faces))
 
+# load each employee's names & features from file
+# create the file if it does not exist
 def load_features():
     if os.path.exists(FEATURES):
-        return pickle.load(open(FEATURES, 'rb'))
+        with open(FEATURES, 'rb') as f: return pickle.load(f)
     else:
         print('Features file does not exist! Creating it now!')
         names, features = extract_all_features()
-        variance = np.var(features, axis=0)
-        indices = np.argsort(variance)
-        indices = indices[::-1]#[:128]
-        features = features[:,indices]
+        #variance = np.var(features, axis=0)
+        #indices = np.argsort(variance)
+        #indices = indices[::-1]#[:128]
+        #features = features[:,indices]
 
-        with open(FEATURES,'wb') as f: pickle.dump((names,features,indices), f)
-        return (names, features, indices)
+        with open(FEATURES,'wb') as f: pickle.dump((names,features),f)#,indices), f)
+        return (names, features)
 
 if __name__ == "__main__":
     #names, features, sort = load_features()

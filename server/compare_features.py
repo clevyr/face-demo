@@ -6,12 +6,15 @@ from extract_features import load_features, extract_features
 import sys
 import numpy as np
 
+# extract the facial features from the specified filepath 
+# and compare each extracted set of features to
+# the saved employee features.  Find the employee 
+# that matches closest and the employee that is furthest.
 def compare_features(filepath):
     bboxes, face_features = extract_features(filepath)
     if len(bboxes) == 0:
         return []
-    names, allfeatures, indices = load_features()    
-    face_features = face_features[:,indices]
+    names, allfeatures = load_features()        
     results = []
     for bbox,feature in zip(bboxes,face_features):    
         min = sys.float_info.max

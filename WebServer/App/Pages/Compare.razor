@@ -50,16 +50,7 @@
                             var height = 100 * (result.BoundingBox.MaxY - result.BoundingBox.MinY);
                             var x = result.BoundingBox.MinX * 100;
                             var y = result.BoundingBox.MinY * 100;
-                            @*<defs>
-                                <mask id="mask">*@
                             <rect width="@width%" height="@height%" x="@x%" y="@y%" style="stroke-width:1;stroke:rgb(0, 255, 144)" fill-opacity="0" />
-
-                            @*</mask>
-                                </defs>
-
-                                <rect width="100%" height="100%" fill="grey"></rect>*@
-
-
                         }
                     </svg>
                 }
@@ -137,7 +128,7 @@
             //}
             StateHasChanged();
 
-            await TestService();
+            await FaceIdentifyService();
         }
         catch(Exception e)
         {
@@ -180,28 +171,34 @@
     }
 
 
-
-    private async Task TestService()
+    private async Task FaceIdentifyService()
     {
         Loading = true;
         Reply = null;
-        //recommended chunk size (64kb)
+        Error = null;
+
+        //grpc recommended chunk size (64kb)
         var chunkSize = 64 * 1024;
 
-        using var call = FaceIdentifierClient.IdentifyImage();
-
-        var numChunks = Math.Ceiling(FileData.Length / (double)chunkSize);
-        for (int i = 0; i < numChunks; ++i)
+        try
         {
-            var count = numChunks == 1 ? Math.Min(FileData.Length, chunkSize) : Math.Min(chunkSize, (FileData.Length - (i * chunkSize)));
-            var byteString = Google.Protobuf.ByteString.CopyFrom(FileData, i * chunkSize, count);
-            var chunk = new Services.IdentifyImageRequest { Image = byteString };
-            await call.RequestStream.WriteAsync(chunk);
+            using var call = FaceIdentifierClient.IdentifyImage();
+
+            var numChunks = Math.Ceiling(FileData.Length / (double)chunkSize);
+            for (int i = 0; i < numChunks; ++i)
+            {
+                var count = numChunks == 1 ? Math.Min(FileData.Length, chunkSize) : Math.Min(chunkSize, (FileData.Length - (i * chunkSize)));
+                var byteString = Google.Protobuf.ByteString.CopyFrom(FileData, i * chunkSize, count);
+                var chunk = new Services.IdentifyImageRequest { Image = byteString };
+                await call.RequestStream.WriteAsync(chunk);
+            }
+            await call.RequestStream.CompleteAsync();
+            Reply = await call;
         }
-        await call.RequestStream.CompleteAsync();
-
-        Reply = await call;
-
+        catch(Exception e)
+        {
+            Error = e.Message;
+        }
 
         Loading = false;
     }
