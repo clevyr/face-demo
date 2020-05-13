@@ -37,14 +37,20 @@ def extract_faces(filepath, size = (224,224), confidence=0.75, jitter=False):
         if face['confidence'] < confidence:
             print('face confidence too low!', face['confidence'])
             continue
-        minX, minY, width, height = face['box']                
+        minX, minY, width, height = face['box']    
         maxX, maxY = minX + width, minY + height
-
+  
+        #clamp the values since sometimes the bbox can go outside the image for some reason
+        minX = max(0, minX)
+        minY = max(0, minY)      
+        maxX = min(img.width, maxX)
+        maxY = min(img.height, maxY)
         #skip any faces that are too small
         if width/img.width < TOO_SMALL:
             print('face too small!')
             continue
         
+        #print(minX, maxX, minY, maxY, (img.width, img.height))    
         #get the pixels from the image corresponding to the MTCNN bounding box & resize them.
         facePixels = data[minY:maxY, minX:maxX]
         faceImg = Image.fromarray(facePixels)
@@ -71,10 +77,7 @@ def extract_all_faces(dir='../data/faces', size = (224,224)):
     names = [process_names(x) for x in filenames if x.endswith('-smile.jpg')]  
     data = data.reshape((-1,) + data.shape[2:])
     return (names, data)
-    
-
-
-                
+             
 
 if __name__ == "__main__":
     #data = extract_all_faces()
