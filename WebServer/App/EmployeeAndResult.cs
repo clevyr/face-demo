@@ -11,16 +11,30 @@ namespace FaceIdentifier
 {
     public class EmployeeAndResult
     {
-        const string FileDirectory = "../../data/faces";       
+        const string FileDirectory = "../../data/faces";
+        private static List<EmployeeAndResult> _Employees { get; set; }
+        public static List<EmployeeAndResult> Employees
+        {
+            get
+            {
+                return CheckUpdateEmployees();
+            }
+            private set { _Employees = value; }
+        }
         public string Name { get; set; }
         public Image Image { get; set; }
         public Image FaceImage { get; set; }
         public IdentifyReply Reply { get; set; }
         public event Action OnGotReply;
         public bool Correct { get; set; }
-        
 
-        public static List<EmployeeAndResult> LoadEmployees()
+
+        static EmployeeAndResult()
+        {
+            Employees = ForceLoadEmployees();
+        }
+
+        public static List<EmployeeAndResult> ForceLoadEmployees()
         {
             var results = new List<EmployeeAndResult>();
             foreach (var filepath in Directory.EnumerateFiles(FileDirectory, "*-fun.jpg"))
@@ -35,12 +49,39 @@ namespace FaceIdentifier
                     {
                         Name = name,
                         Image = image,
-                    });                 
-                   
+                    });
+
                 }
 
             }
+            _Employees = results;
             return results;
+        }
+
+        private static List<EmployeeAndResult> CheckUpdateEmployees()
+        {
+            var employeeImages = Directory.EnumerateFiles(FileDirectory, "*-fun.jpg").ToList();
+            if (_Employees.Count != employeeImages.Count)
+            {
+                return ForceLoadEmployees();
+            }
+            else
+            {
+                var employeeNames = _Employees.Select(x => x.Name).ToHashSet();
+                var fileEmployeeNames = employeeImages.Select(filepath =>
+                {
+                    var filename = Path.GetFileName(filepath);
+                    var splitResult = filename.Split("-");
+                    return String.Join('-', splitResult.Take(splitResult.Length - 1));
+                }).ToHashSet();
+
+                employeeNames.SymmetricExceptWith(fileEmployeeNames);
+                if (employeeNames.Any())
+                {
+                    return ForceLoadEmployees();
+                }
+            }
+            return _Employees;
         }
 
         public byte[] GetImageData()
@@ -77,7 +118,7 @@ namespace FaceIdentifier
             {
                 Correct = first.Nearest.Name == Name;
             }
-            Console.WriteLine($"GOT REPLY!!! {this.Name}" );
+            Console.WriteLine($"GOT REPLY!!! {this.Name}");
             OnGotReply?.Invoke();
         }
     }

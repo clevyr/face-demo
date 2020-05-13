@@ -1,0 +1,194 @@
+﻿@page "/compare"
+
+
+@using System.IO;
+@using System.Drawing;
+@inject Services.Identifier.IdentifierClient FaceIdentifierClient
+
+
+<style>
+    .img-overlay-wrap {
+        position: relative;
+        display: inline-block;
+        transition: transform 150ms ease-in-out;
+        max-width: 500px;
+    }
+
+        .img-overlay-wrap img { 
+            max-width: 100%;
+            height: auto;
+        }
+
+        .img-overlay-wrap svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+</style>
+<h1>Face</h1>
+
+
+<div class="row">
+    <InputFile OnChange=@HandleFileSelectedAsync accept="image/jpg, image/gif"/>
+</div>
+<div class="row">
+    @if (FileData != null)
+    {
+        <div class="col">
+            <div class="img-overlay-wrap">
+                <img src=@ImgSrcFromBytes(FileData) />
+                @if (Reply != null)
+                {
+                    <svg width="100%" height="100%" style="position:absolute;left:0;top:0">
+                        @foreach (var result in Reply.Results)
+                        {
+                            var width = 100 * (result.BoundingBox.MaxX - result.BoundingBox.MinX);
+                            var height = 100 * (result.BoundingBox.MaxY - result.BoundingBox.MinY);
+                            var x = result.BoundingBox.MinX * 100;
+                            var y = result.BoundingBox.MinY * 100;
+                            @*<defs>
+                                <mask id="mask">*@
+                            <rect width="@width%" height="@height%" x="@x%" y="@y%" style="stroke-width:1;stroke:rgb(0, 255, 144)" fill-opacity="0" />
+
+                            @*</mask>
+                                </defs>
+
+                                <rect width="100%" height="100%" fill="grey"></rect>*@
+
+
+                        }
+                    </svg>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+    @if (Loading)
+    {
+<div class="spinner-border m-5" role="status">
+    <span class="sr-only">Loading...</span>
+</div>
+    }
+    else if (Reply != null)
+    {
+        foreach (var result in Reply.Results)
+        {
+<div class="row">
+    <div class="col">
+        <img src=@ImgSrcFromResult(result) style="max-height:200px"/>
+    </div>
+    <div class="col">
+        <label>Closest</label>
+        <img src=@FileDataFromName(result.Nearest.Name) style="max-height:200px" />
+        <div>@result.Nearest.Distance</div>
+    </div>
+    <div class="col">
+        <label>Furthest</label>
+        <img src=@FileDataFromName(result.Furthest.Name) style="max-height:200px" />
+        <div>@result.Furthest.Distance</div>
+    </div>
+</div>
+
+        }
+    }
+
+
+@*<button class="btn btn-primary" @onclick=@TestService>Click me</button>*@
+
+@code {
+    Services.IdentifyReply Reply;
+    IFileListEntry File;
+    byte[] FileData;
+    Image Image;
+    bool Loading = false;
+    private async Task HandleFileSelectedAsync(IFileListEntry[] files)
+    {
+        Loading = true;
+        Reply = null;
+        StateHasChanged();
+        File = files.First();
+        var stream = await File.ReadAllAsync();
+        Image = System.Drawing.Bitmap.FromStream(stream);
+
+        using (MemoryStream ms = new MemoryStream())
+        {
+            Image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+            FileData = ms.ToArray();
+        }
+
+        await TestService();
+        Loading = false;
+    }
+
+    private string ImgSrcFromBytes(byte[] image)
+    {
+        var base64 = Convert.ToBase64String(image);
+        return String.Format("data:image/jpg;base64,{0}", base64);
+    }
+
+    private string ImgSrcFromResult(Services.IdentifyReply.Types.IdentifyResult result)
+    {
+        var bitmap = CropByRect(Image, new Rectangle
+        {
+            X = (int)(result.BoundingBox.MinX * Image.Width),
+            Y = (int)(result.BoundingBox.MinY * Image.Height),
+            Width = (int)((result.BoundingBox.MaxX - result.BoundingBox.MinX) * Image.Width),
+            Height = (int)((result.BoundingBox.MaxY - result.BoundingBox.MinY) * Image.Height),
+        });
+        using (MemoryStream ms = new MemoryStream())
+        {
+            bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+            return ImgSrcFromBytes(ms.ToArray());
+        }
+
+
+    }
+
+    private string FileDataFromName(string name)
+    {
+        var filePath = $"../../data/faces/{name}-smile.jpg";
+        var bytes = System.IO.File.ReadAllBytes(filePath);
+        return ImgSrcFromBytes(bytes);
+
+    }
+
+
+
+    private async Task TestService()
+    {
+        Loading = true;
+        Reply = null;
+        //recommended chunk size (64kb)
+        var chunkSize = 64 * 1024;
+
+        using var call = FaceIdentifierClient.IdentifyImage();
+
+        var numChunks = Math.Ceiling(FileData.Length / (double)chunkSize);
+        for (int i = 0; i < numChunks; ++i)
+        {
+            var count = numChunks == 1 ? Math.Min(FileData.Length, chunkSize) : Math.Min(chunkSize, (FileData.Length - (i * chunkSize)));
+            var byteString = Google.Protobuf.ByteString.CopyFrom(FileData, i * chunkSize, count);
+            var chunk = new Services.IdentifyImageRequest { Image = byteString };
+            await call.RequestStream.WriteAsync(chunk);
+        }
+        await call.RequestStream.CompleteAsync();
+
+        Reply = await call;
+
+
+        Loading = false;
+    }
+
+    private Bitmap CropByRect(Image b, Rectangle r)
+    {
+        Bitmap nb = new Bitmap(r.Width, r.Height);
+        using (Graphics g = Graphics.FromImage(nb))
+        {
+            g.DrawImage(b, 0, 0, r, GraphicsUnit.Pixel);
+            return nb;
+        }
+    }
+
+
+}
