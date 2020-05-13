@@ -29,7 +29,11 @@
 
 
 <div class="row">
-    <InputFile OnChange=@HandleFileSelectedAsync accept="image/jpg, image/gif"/>
+    <InputFile OnChange=@HandleFileSelectedAsync accept=".jpg,.png,.jpeg"/>
+     @if(Error != null)
+    {
+        <div>@Error</div>
+    }
 </div>
 <div class="row">
     @if (FileData != null)
@@ -102,22 +106,41 @@
     byte[] FileData;
     Image Image;
     bool Loading = false;
+    string Error { get; set; }
+    const int MaxFileSize = 10 * 1000000;
     private async Task HandleFileSelectedAsync(IFileListEntry[] files)
     {
-        Loading = true;
-        Reply = null;
-        StateHasChanged();
         File = files.First();
-        var stream = await File.ReadAllAsync();
-        Image = System.Drawing.Bitmap.FromStream(stream);
-
-        using (MemoryStream ms = new MemoryStream())
+        Error = null;
+        if (File.Size > MaxFileSize)
         {
-            Image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-            FileData = ms.ToArray();
+            Error = $"File too big (Max size of {MaxFileSize / 1000000} MB!)";
+            return;
         }
 
-        await TestService();
+        Loading = true;
+        Reply = null;
+
+
+        try
+        {
+            var stream = await File.ReadAllAsync(maxSizeBytes: MaxFileSize);
+            Image = Image.FromStream(stream);
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                Image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                FileData = ms.ToArray();
+            }
+            StateHasChanged();
+
+            await TestService();
+        }
+        catch(Exception e)
+        {
+            Error = e.Message;
+        }
+
         Loading = false;
     }
 
