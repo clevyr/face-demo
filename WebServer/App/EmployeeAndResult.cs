@@ -22,8 +22,7 @@ namespace FaceIdentifier
             private set { _Employees = value; }
         }
         public string Name { get; set; }
-        public Image Image { get; set; }
-        public Image FaceImage { get; set; }
+        public Byte[] ImageBytes { get; set; }        
         public IdentifyReply Reply { get; set; }
         public event Action OnGotReply;
         public bool Correct { get; set; }
@@ -42,13 +41,16 @@ namespace FaceIdentifier
                 var filename = Path.GetFileName(filepath);
                 var splitResult = filename.Split("-");
                 var name = String.Join('-', splitResult.Take(splitResult.Length - 1));
-                var image = Image.FromFile(filepath);
-                if (image != null)
+                //var image = Image.FromFile(filepath);
+                var imageStream = File.OpenRead(filepath);
+                if (imageStream != null)
                 {
+                    var bytes = new byte[imageStream.Length];
+                    imageStream.Read(bytes, 0, (int)imageStream.Length);
                     results.Add(new EmployeeAndResult
                     {
                         Name = name,
-                        Image = image,
+                        ImageBytes = bytes,
                     });
 
                 }
@@ -83,15 +85,7 @@ namespace FaceIdentifier
             }
             return _Employees;
         }
-
-        public byte[] GetImageData()
-        {
-            using (MemoryStream ms = new MemoryStream())
-            {
-                Image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                return ms.ToArray();
-            }
-        }
+        
 
         public async Task GetResultAsync(Identifier.IdentifierClient client)
         {
@@ -99,14 +93,13 @@ namespace FaceIdentifier
             var chunkSize = 64 * 1024;
 
             using var call = client.IdentifyImage();
+            
 
-            var imageData = GetImageData();
-
-            var numChunks = Math.Ceiling(imageData.Length / (double)chunkSize);
+            var numChunks = Math.Ceiling(ImageBytes.Length / (double)chunkSize);
             for (int i = 0; i < numChunks; ++i)
             {
-                var count = numChunks == 1 ? Math.Min(imageData.Length, chunkSize) : Math.Min(chunkSize, (imageData.Length - (i * chunkSize)));
-                var byteString = Google.Protobuf.ByteString.CopyFrom(imageData, i * chunkSize, count);
+                var count = numChunks == 1 ? Math.Min(ImageBytes.Length, chunkSize) : Math.Min(chunkSize, (ImageBytes.Length - (i * chunkSize)));
+                var byteString = Google.Protobuf.ByteString.CopyFrom(ImageBytes, i * chunkSize, count);
                 var chunk = new IdentifyImageRequest { Image = byteString };
                 await call.RequestStream.WriteAsync(chunk);
             }

@@ -24,11 +24,11 @@
 </style>
 
 <div class="row">
-    @if (Employee.Image != null)
+    @if (Employee.ImageBytes != null)
     {
         <div class="col">
             <div class="img-overlay-wrap">
-                <img src=@ImgSrcFromBytes(Employee.GetImageData()) />
+                <img src=@ImgSrcFromBytes(Employee.ImageBytes) />
                 @if (Employee.Reply != null)
                 {
                     <svg width="100%" height="100%" style="position:absolute;left:0;top:0">

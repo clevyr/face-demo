@@ -27,4 +27,7 @@
       <Generator></Generator>
     </Protobuf>
   </ItemGroup>
+  <ItemGroup>
+    <Content Remove="Pages\Index %28copy%29.razor" />
+  </ItemGroup>
 </Project>
