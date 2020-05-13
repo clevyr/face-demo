@@ -4,7 +4,7 @@ COPY ./server/requirements.txt ./
 
 RUN set -x \
     && apt-get update \
-    && apt-get install -y \
+    && apt-get install -y --no-install-recommends \
         libglib2.0-0 \
         libsm6 \
         libxext6 \
