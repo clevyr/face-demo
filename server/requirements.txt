@@ -1,4 +1,4 @@
 grpcio==1.28.1
 keras-vggface==0.6
 mtcnn==0.1.0
-tensorflow==1.15.2
+tensorflow==2.3.1
